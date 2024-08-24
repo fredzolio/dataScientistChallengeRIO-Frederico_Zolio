@@ -1,26 +1,23 @@
+import streamlit as st
 from google.cloud import bigquery
 from google.oauth2 import service_account
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 def run_query(query):
     credentials = service_account.Credentials.from_service_account_info({
-        "type": os.getenv('TYPE'),
-        "project_id": os.getenv('PROJECT_ID'),
-        "private_key_id": os.getenv('PRIVATE_KEY_ID'),
-        "private_key": os.getenv('PRIVATE_KEY').replace('\\n', '\n'),
-        "client_email": os.getenv('CLIENT_EMAIL'),
-        "client_id": os.getenv('CLIENT_ID'),
-        "auth_uri": os.getenv('AUTH_URI'),
-        "token_uri": os.getenv('TOKEN_URI'),
-        "auth_provider_x509_cert_url": os.getenv('AUTH_PROVIDER_X509_CERT_URL'),
-        "client_x509_cert_url": os.getenv('CLIENT_X509_CERT_URL'),
-        "universe_domain": os.getenv('UNIVERSE_DOMAIN')
+        "type": st.secrets["google_cloud"]["type"],
+        "project_id": st.secrets["google_cloud"]["project_id"],
+        "private_key_id": st.secrets["google_cloud"]["private_key_id"],
+        "private_key": st.secrets["google_cloud"]["private_key"],
+        "client_email": st.secrets["google_cloud"]["client_email"],
+        "client_id": st.secrets["google_cloud"]["client_id"],
+        "auth_uri": st.secrets["google_cloud"]["auth_uri"],
+        "token_uri": st.secrets["google_cloud"]["token_uri"],
+        "auth_provider_x509_cert_url": st.secrets["google_cloud"]["auth_provider_x509_cert_url"],
+        "client_x509_cert_url": st.secrets["google_cloud"]["client_x509_cert_url"],
+        "universe_domain": st.secrets["google_cloud"]["universe_domain"]
     })
 
-    client = bigquery.Client(credentials=credentials, project=os.getenv('PROJECT_ID'))
+    client = bigquery.Client(credentials=credentials, project=st.secrets["google_cloud"]["project_id"])
 
     df = client.query(query).to_dataframe(geography_as_object=True, progress_bar_type='tqdm')
 
