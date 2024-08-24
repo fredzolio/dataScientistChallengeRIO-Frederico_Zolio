@@ -11,7 +11,7 @@ from scripts.api_integration import *
 from scripts.visualization import *
 from scripts.utils import *
 
-locale.setlocale(locale.LC_TIME, 'pt_BR')
+set_locale_to_pt_br()
 
 st.set_page_config(
     page_title="Data Scient. Rio - Frederico Zolio",

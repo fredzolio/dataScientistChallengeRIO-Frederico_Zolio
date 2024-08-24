@@ -1,5 +1,6 @@
 import streamlit as st
 import plotly.express as px
+import locale
 
 def display_metrics(result, label_name, value_name):
     cols = st.columns(len(result))
@@ -17,3 +18,15 @@ def display_graph(result, chart_type):
     elif chart_type == "Linha":
         fig = px.line(result, x='Evento', y='Total', title="Evolução dos Chamados por Evento")
     st.plotly_chart(fig)
+    
+def set_locale_to_pt_br():
+    locales_to_try = ['pt_BR.UTF-8', 'pt_BR.utf8', 'pt_BR', 'ptb', 'portuguese_brazil']
+
+    for loc in locales_to_try:
+        try:
+            locale.setlocale(locale.LC_TIME, loc)
+            return True
+        except locale.Error:
+            continue
+
+    return False
