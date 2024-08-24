@@ -1,4 +1,3 @@
 .venv
-credentials/*
 .env
 scripts/__pycache__
