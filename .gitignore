@@ -2,4 +2,3 @@
 credentials/*
 .env
 scripts/__pycache__
-scripts/visualization.py
