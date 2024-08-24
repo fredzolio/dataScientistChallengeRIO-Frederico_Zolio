@@ -9,15 +9,17 @@ from scripts.data_loaders import run_query
 from scripts.sql_queries import *
 from scripts.api_integration import *
 from scripts.visualization import *
+from scripts.utils import *
 
 locale.setlocale(locale.LC_TIME, 'pt_BR')
 
 st.set_page_config(
     page_title="Data Scient. Rio - Frederico Zolio",
-    page_icon="🌅"
+    page_icon="🌅",
+    layout="wide"
     )
 st.title("Desafio Cientista de Dados Júnior - Prefeitura do Rio de Janeiro")
-st.text('Por Frederico Zolio Gonzaga Diniz (fredzolio@live.com)')
+st.caption('Por Frederico Zolio Gonzaga Diniz (fredzolio@live.com)')
 
 
 # Menu lateral
@@ -37,17 +39,13 @@ if option == "SQL - Chamados 1746":
     result.rename(columns={
         'total_chamados': 'Total de chamados'
         }, inplace=True)
-    st.write(result)
+    st.metric("Total de chamados", result['Total de chamados'].iloc[0])
     ##
     st.divider()
     st.subheader("2. Qual o tipo de chamado com mais registros?")
     query = query_tipo_mais_chamados_dia(data)
     result = run_query(query)
-    result.rename(columns={
-        'tipo': 'Tipo de chamado',
-        'total': 'Total'
-        }, inplace=True)
-    st.write(result)
+    display_metrics(result, 'tipo', 'total')
     ##
     st.divider()
     st.subheader("3. Quais os 3 bairros com mais chamados?")
@@ -92,23 +90,19 @@ if option == "SQL - Chamados 1746":
     margin={"r": 0, "t": 0, "l": 0, "b": 0},
     showlegend=False
     )
+    display_metrics(df_bairros, 'bairro', 'numero_chamados')
     df_bairros.rename(columns={
         'bairro': 'Bairro',
         'numero_chamados': 'Número de chamados'
     }, inplace=True)
-    st.write(df_bairros[['Bairro', 'Número de chamados']])
     st.info("Mapa em triangulação dos bairros para rápida visualização e identificação.")
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     ##
     st.divider()
     st.subheader("4. Qual a subprefeitura com mais chamados?")
     query = query_subprefeitura_mais_chamados_dia(data)
     result = run_query(query)
-    result.rename(columns={
-        'subprefeitura': 'Subprefeitura',
-        'total':'Total'
-    }, inplace=True)
-    st.write(result)
+    display_metrics(result, 'subprefeitura', 'total')
     ##
     st.divider()
     st.subheader("5. Existem chamados sem bairro ou subprefeitura?")
@@ -117,8 +111,8 @@ if option == "SQL - Chamados 1746":
     result.rename(columns={
         'total':'Total'
     }, inplace=True)
-    st.write(result)
-    st.info('Isso acontece, devido ao fato de que a categoria desses chamados é: Serviço, e, portanto, o tipo é: Ônibus, caracterizando, assim, uma forma que não depende de uma localidade, e sim de um objeto em manuntenção.')
+    st.metric('Chamados sem bairro ou subprefeitura',result['Total'].iloc[0])
+    st.info('Isso ocorre porque a categoria desses chamados é classificada como "Serviço", e, portanto, o tipo associado é "Ônibus". Isso caracteriza uma situação que não está vinculada a uma localidade específica, mas sim ao objeto em manutenção.')
     ##
     st.divider()
     st.header("Chamados do 1746 em Grandes Eventos")
@@ -130,7 +124,7 @@ if option == "SQL - Chamados 1746":
     result.rename(columns={
         'total':'Total'
     }, inplace=True)
-    st.write(result)
+    st.metric('Total',result['Total'].iloc[0])
     ##
     st.divider()
     st.subheader("7. Seleção de chamados durante eventos específicos (Reveillon, Carnaval, Rock in Rio)")
@@ -142,11 +136,10 @@ if option == "SQL - Chamados 1746":
     st.subheader("8. Quantos chamados foram abertos em cada evento?")
     query = query_chamados_por_evento()
     result = run_query(query)
-    result.rename(columns={
-        'evento': 'Evento',
-        'total':'Total'
-    }, inplace=True)
-    st.write(result)
+    result.rename(columns={'evento': 'Evento', 'total': 'Total'}, inplace=True)
+    display_metrics(result, 'Evento', 'Total')
+    chart_type = st.radio("Selecione o tipo de gráfico para visualizar os dados:", ("Barra", "Pizza", "Linha"))
+    display_graph(result, chart_type)
     ##
     st.divider()
     st.subheader("9. Qual evento teve a maior média diária de chamados?")
@@ -156,8 +149,19 @@ if option == "SQL - Chamados 1746":
         'evento': 'Evento',
         'media_diaria':'Média diária'
     }, inplace=True)
-    st.write(result)
+    display_metrics(result, 'Evento', 'Média diária')
     st.info(f"O evento que teve maior média diária de chamados foi: **{result.iloc[0]['Evento']}**")
+    fig = px.bar(
+        result,
+        x='Média diária',
+        y='Evento',
+        orientation='h',
+        title="Média Diária de Chamados por Evento",
+        height=300,
+        width=800
+    )
+    fig.update_traces(marker=dict(color='blue'), selector=dict(type='bar'))
+    st.plotly_chart(fig)
     ##
     st.divider()
     st.subheader("10. Comparação das médias diárias de chamados durante os eventos e no período total.")
@@ -165,10 +169,33 @@ if option == "SQL - Chamados 1746":
     result = run_query(query)
     result.rename(columns={
         'evento': 'Evento',
-        'media_diaria_evento':'Média diária do evento',
-        'media_diaria_total':'Média diária total'
+        'media_diaria_evento': 'Média diária do evento',
+        'media_diaria_total': 'Média diária total'
     }, inplace=True)
-    st.write(result)
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=result['Evento'],
+        y=result['Média diária do evento'],
+        name='Média diária do evento',
+        marker_color='blue'
+    ))
+    fig.add_trace(go.Bar(
+        x=result['Evento'],
+        y=result['Média diária total'],
+        name='Média diária total',
+        marker_color='orange'
+    ))
+    fig.update_layout(
+        barmode='group',
+        title="Comparação das Médias Diárias de Chamados",
+        xaxis_title="Evento",
+        yaxis_title="Média Diária de Chamados",
+        legend_title="Tipo de Média",
+        height=400,
+        width=800,
+        showlegend=True
+    )
+    st.plotly_chart(fig)
 ####################
 # Seção 2: Integração com APIs
 elif option == "Integração com APIs":
@@ -179,17 +206,18 @@ elif option == "Integração com APIs":
     st.divider()
     st.subheader("1. Quantos feriados há no Brasil em 2024?")
     holidays = get_holiday_data(year)
-    st.write(f"Total de feriados: **{len(holidays)}**")
+    st.metric("Total de feriados", len(holidays))
     st.dataframe(holidays[['date', 'localName', 'name']].rename(columns={
     'date': 'Data',
     'localName': 'Feriado (Em nome local)',
     'name': 'Nome Internacional',
-    }))
+    }).style.format({"Data": lambda x: pd.to_datetime(x).strftime('%d/%m/%Y')})
+    ,use_container_width=True)
     ##
     st.divider()
     st.subheader("2. Qual mês tem o maior número de feriados?")
     holidays_by_month = get_holidays_by_month(holidays)
-    st.bar_chart(holidays_by_month, x_label="Meses", y_label="Qtd. de Feriados",)
+    st.bar_chart(holidays_by_month, x_label="Meses", y_label="Qtd. de Feriados",use_container_width=True)
     max_feriados = holidays_by_month.max()
     meses_com_mais_feriados = holidays_by_month[holidays_by_month == max_feriados].index.tolist()
     nomes_meses_com_mais_feriados = [calendar.month_name[mes].capitalize() for mes in meses_com_mais_feriados]
@@ -198,7 +226,7 @@ elif option == "Integração com APIs":
     st.divider()
     st.subheader("3. Quantos feriados caem em dias úteis?")
     weekdays_holidays = get_holidays_weekdays(holidays)
-    st.write(f"Total de feriados em dias úteis: {len(weekdays_holidays)}")
+    st.metric("Total de feriados em dias úteis", len(weekdays_holidays))
     weekdays_holidays['count'] = 1
     holidays_calendar = weekdays_holidays.set_index('date').resample('D').sum().fillna(0)
     fig, ax = calplot.calplot(
