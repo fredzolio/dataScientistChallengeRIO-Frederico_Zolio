@@ -4,6 +4,10 @@
 
 Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Prefeitura do Rio de Janeiro. A aplicação foi construída usando Python e Streamlit para visualizar e analisar dados relacionados aos chamados do serviço 1746 e feriados no Brasil em 2024.
 
+## Acesso imediato
+
+[Link para o projeto em produção via StreamLitCloud](https://fredericozoliodatario.streamlit.app/)
+
 ## Funcionalidades
 
 - **Visualização de Chamados do 1746:**
@@ -90,8 +94,13 @@ Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Pr
 
 ## Configuração do Locale
 
-O código tenta configurar o locale para `pt_BR` para uma exibição correta das datas. Se isso não for possível, ele mantém o locale padrão do sistema.
+O código tenta configurar o locale para `pt_BR` para uma exibição correta das datas. Se isso não for possível, ele mantém o locale padrão do sistema. Inclusive, no ambiente de produção (deploy) via StreamLitCloud, não é possível aplicar o locale correto, portanto, algumas coisas podem aparecer em inglês.
 
 ## Visualizações
 
 O aplicativo oferece diversas formas de visualização dos dados, incluindo gráficos interativos, métricas e mapas, que facilitam a análise das informações.
+
+## Autoria
+
+Frederico Zolio Gonzaga Diniz
+[E-mail](mailto:fredzolio@live.com)
