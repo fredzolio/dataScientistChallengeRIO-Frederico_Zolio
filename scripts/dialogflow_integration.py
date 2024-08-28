@@ -20,7 +20,7 @@ def detect_intent_from_text(text, session_id, language_code='pt-BR'):
     response = session_client.detect_intent(session=session, query_input=query_input)
     
     data = pd.to_datetime("2023-04-01").strftime('%Y-%m-%d')
-    year = st.number_input("Ano de escolha", min_value=2024, max_value=2024, value=2024)
+    year = 2024
     holidays = get_holiday_data(year)
     weather_data = get_weather_data()
     holidays_weather = get_weather_and_holiday_data(holidays, weather_data)
