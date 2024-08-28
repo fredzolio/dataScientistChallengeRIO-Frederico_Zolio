@@ -49,7 +49,7 @@ if option == "SQL - Chamados 1746":
 # Seção 2: Integração com APIs
 elif option == "Integração com APIs":
     st.header("Integração com APIs: Feriados e Clima")
-
+    
     year = st.number_input("Ano de escolha", min_value=2024, max_value=2024, value=2024)
     holidays = get_holiday_data(year)
     weather_data = get_weather_data()
@@ -74,12 +74,12 @@ elif option == "Integração com APIs":
     render_feriado_mais_aproveitavel(holidays_weather)
     st.divider()
 ########################
+# Seção 3: Assistente Fred
 elif option == "Assistente Virtual":
     st.header("Assistente Virtual")
     st.subheader("Converse com o Fred, nosso assistente virtual capaz de responder suas dúvidas acerca do desafio.")
-    
     user_input = st.text_input("Pergunte algo sobre os chamados ou feriados:")
-    
     if user_input:
         response = detect_intent_from_text(user_input, session_id="123456")
         st.write(f"<span style='color: lightgreen; font-weight: bold;'>Fred (Assistente Data Rio):</span> {response}", unsafe_allow_html=True)
+########################
