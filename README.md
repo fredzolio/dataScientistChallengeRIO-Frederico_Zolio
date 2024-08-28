@@ -1,7 +1,3 @@
-Aqui está o README atualizado com a introdução sobre o assistente virtual chamado "Fred":
-
----
-
 # Desafio Cientista de Dados Júnior - Prefeitura do Rio de Janeiro
 
 ## Descrição
