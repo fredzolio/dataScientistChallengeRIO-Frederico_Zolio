@@ -1,8 +1,14 @@
+Aqui está o README atualizado com a introdução sobre o assistente virtual chamado "Fred":
+
+---
+
 # Desafio Cientista de Dados Júnior - Prefeitura do Rio de Janeiro
 
 ## Descrição
 
 Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Prefeitura do Rio de Janeiro. A aplicação foi construída usando Python e Streamlit para visualizar e analisar dados relacionados aos chamados do serviço 1746 e feriados no Brasil em 2024.
+
+Além disso, o projeto conta com um **assistente virtual chamado "Fred"**, que permite a interação com os dados de maneira mais intuitiva e automatizada. Fred utiliza a tecnologia Dialogflow para responder a perguntas sobre os chamados e feriados, tornando a experiência do usuário mais interativa e dinâmica.
 
 ## Acesso imediato
 
@@ -20,9 +26,15 @@ Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Pr
   - Chamados relacionados a grandes eventos, como Carnaval e Rock in Rio.
 
 - **Integração com APIs:**
+
   - Visualização dos feriados no Brasil em 2024.
   - Análise do tempo e temperatura média em cada feriado.
   - Identificação dos feriados "mais aproveitáveis" e "não aproveitáveis" com base no clima.
+
+- **Assistente Virtual "Fred":**
+  - Responde a perguntas sobre os dados de chamados e feriados.
+  - Permite o acesso a informações específicas através de comandos de texto.
+  - Facilita a interação com a aplicação, tornando-a mais acessível e intuitiva.
 
 ## Pré-requisitos
 
@@ -69,8 +81,8 @@ Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Pr
 4. Crie uma credencial do tipo Conta de Serviço.
 5. Associe uma chave de acesso a ela.
 6. Baixe o JSON com sua conta de serviço.
-7. Copie cada item do JSON para cada item do arquivo .streamlit/secrets.toml
-8. Verifique se você retirou o .exemple do final do arquivo.
+7. Copie cada item do JSON para cada item do arquivo `.streamlit/secrets.toml`.
+8. Verifique se você retirou o `.exemple` do final do arquivo.
 
 ## Executando a Aplicação
 
@@ -96,6 +108,19 @@ Este projeto é uma solução para o desafio de Cientista de Dados Júnior da Pr
 
 O código tenta configurar o locale para `pt_BR` para uma exibição correta das datas. Se isso não for possível, ele mantém o locale padrão do sistema. Inclusive, no ambiente de produção (deploy) via StreamLitCloud, não é possível aplicar o locale correto, portanto, algumas coisas podem aparecer em inglês.
 
+## Assistente Virtual "Fred"
+
+Fred é o assistente virtual integrado ao projeto que permite consultas automatizadas aos dados através de comandos de texto. Ele foi desenvolvido usando o Dialogflow e pode responder a uma série de perguntas sobre os dados de chamados do 1746 e feriados no Brasil em 2024. Com Fred, os usuários podem interagir com os dados de maneira mais natural, tornando a experiência de análise mais intuitiva.
+
+### Exemplo de Interação
+
+Você pode perguntar:
+
+- "Quantos chamados foram abertos no dia 01/01/2024?"
+- "Qual foi o feriado mais aproveitável de 2024?"
+
+Fred irá processar a solicitação e retornar a resposta diretamente na interface do aplicativo.
+
 ## Visualizações
 
 O aplicativo oferece diversas formas de visualização dos dados, incluindo gráficos interativos, métricas e mapas, que facilitam a análise das informações.
@@ -103,4 +128,5 @@ O aplicativo oferece diversas formas de visualização dos dados, incluindo grá
 ## Autoria
 
 Frederico Zolio Gonzaga Diniz
+
 [E-mail](mailto:fredzolio@live.com)

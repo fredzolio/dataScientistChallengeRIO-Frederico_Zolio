@@ -20,7 +20,7 @@ def display_graph(result, chart_type):
     st.plotly_chart(fig)
     
 def set_locale_to_pt_br():
-    locales_to_try = ['pt_BR.UTF-8', 'pt_BR.utf8', 'pt_BR', 'ptb', 'portuguese_brazil']
+    locales_to_try = ['pt_BR', 'pt_BR.utf8', 'pt_BR.UTF-8', 'ptb', 'portuguese_brazil']
 
     for loc in locales_to_try:
         try:
