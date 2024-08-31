@@ -108,6 +108,10 @@ O código tenta configurar o locale para `pt_BR` para uma exibição correta das
 
 Fred é o assistente virtual integrado ao projeto que permite consultas automatizadas aos dados através de comandos de texto. Ele foi desenvolvido usando o Dialogflow e pode responder a uma série de perguntas sobre os dados de chamados do 1746 e feriados no Brasil em 2024. Com Fred, os usuários podem interagir com os dados de maneira mais natural, tornando a experiência de análise mais intuitiva.
 
+## Observação
+
+Na pasta do projeto, vocês verão que os arquivos não estão separados por pasta, ou seja, não está modularizado, saibam que o intenção foi essa mesma, para que evite a não visualização de algum arquivo, como eu acredito que serão mais de uma pessoa avaliando, ficando tudo "a vista", é mais fácil de entender o escopo completo do projeto.
+
 ### Exemplo de Interação
 
 Você pode perguntar:
@@ -120,6 +124,10 @@ Fred irá processar a solicitação e retornar a resposta diretamente na interfa
 ## Visualizações
 
 O aplicativo oferece diversas formas de visualização dos dados, incluindo gráficos interativos, métricas e mapas, que facilitam a análise das informações.
+
+## Modelo de IA para previsão de enchentes
+
+Também idealizei um projeto para alinhar dados do DataRio e criar um mapa de calor para áreas que merecem uma atenção especial. O README dentro da pasta `projeto_zeroloss` explica melhor.
 
 ## Autoria
 

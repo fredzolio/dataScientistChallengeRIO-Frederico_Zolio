@@ -1,6 +1,6 @@
+import numpy as np
 import streamlit as st
 import calendar
-import calplot
 import plotly.express as px
 from scripts.api_integration import *
 
@@ -27,19 +27,43 @@ def render_feriados_dias_uteis(holidays):
     st.subheader("3. Quantos feriados caem em dias úteis?")
     weekdays_holidays = get_holidays_weekdays(holidays)
     st.metric("Total de feriados em dias úteis", len(weekdays_holidays))
-    weekdays_holidays['count'] = 1
-    holidays_calendar = weekdays_holidays.set_index('date').resample('D').sum().fillna(0)
-    fig, ax = calplot.calplot(
-        holidays_calendar['count'],
-        cmap='Reds',
-        fillcolor='grey',
-        linewidth=0.5,
-        textformat='{:.0f}',
-        suptitle="Dias Úteis que são Feriados em 2024",
-        how="sum",
+    weekdays_holidays['date_str'] = weekdays_holidays['date'].dt.strftime('%Y-%m-%d')
+    weekdays_holidays['dia_semana'] = weekdays_holidays['date'].dt.strftime('%A')
+    weekdays_trad = {
+        'Monday': 'Segunda-feira',
+        'Tuesday': 'Terça-feira',
+        'Wednesday': 'Quarta-feira',
+        'Thursday': 'Quinta-feira',
+        'Friday': 'Sexta-feira',
+        'Saturday': 'Sábado',
+        'Sunday': 'Domingo'
+    }
+    weekdays_holidays['dia_semana'] = weekdays_holidays['dia_semana'].replace(weekdays_trad)
+    weekdays_holidays['y_pos'] = np.arange(len(weekdays_holidays))
+    fig = px.scatter(weekdays_holidays, x='date', y='y_pos',
+                    title="Feriados em Dias Úteis",
+                    labels={'date': 'Data', 'localName': 'Feriado', 'y_pos': ''},
+                    hover_data={'date_str': True,},
+                    height=400)
+    
+    fig.update_traces(marker=dict(size=20, color='red'), 
+                    selector=dict(mode='markers'),
+                    hovertemplate="<b>%{customdata[0]}</b><br>Data: %{x|%d-%b-%Y}<br>Dia da Semana: %{customdata[1]}<extra></extra>",
+                    customdata=np.stack((weekdays_holidays['localName'], weekdays_holidays['dia_semana']), axis=-1))
+    
+    fig.update_layout(showlegend=False)
+    fig.update_layout(
+        xaxis=dict(
+            showgrid=True,
+            tickmode='linear',
+            tick0=weekdays_holidays['date'].min(),
+            dtick="M1",
+            tickformat="%d-%b"
+        ),
+        yaxis=dict(showticklabels=False),
+        margin={"r": 0, "t": 0, "l": 0, "b": 0}
     )
-    st.text("Mapa de calor com os feriados em dia útil.", help="Exploração alternativa aos dias úteis com feriado.")
-    st.pyplot(fig)
+    st.plotly_chart(fig, use_container_width=True)
 
 def render_temperatura_media_por_mes():
     st.subheader("4. Qual foi a temperatura média em cada mês? Entre 01/01/2024 e 01/08/2024")
@@ -104,14 +128,45 @@ def render_feriados_nao_aproveitaveis(holidays_weather):
         lambda code: weather_code_map.get(code, {}).get('description', 'N/A')
     )
     if not non_enjoyable_holidays.empty:
-        non_enjoyable_holidays['date'] = non_enjoyable_holidays['date'].dt.strftime('%d/%m/%Y')
-        st.write("Os seguintes feriados foram considerados 'não aproveitáveis' devido ao frio ou mau tempo:")
-        st.table(non_enjoyable_holidays[['localName', 'date', 'average_temp', 'description']].rename(columns={
-            'localName': 'Feriado',
-            'date': 'Data',
-            'average_temp': 'Temp. Média',
-            'description': 'Tempo Predom.'
-        }))
+        non_enjoyable_holidays['month'] = non_enjoyable_holidays['date'].dt.strftime('%B')
+        non_enjoyable_holidays['temp_type'] = non_enjoyable_holidays['average_temp'].apply(
+            lambda temp: 'Frio' if temp < 20 else 'Mau Tempo'
+        )
+        
+        view_option = st.radio(
+            "Escolha o modo de visualização:",
+            ("Tabela", "Gráfico Radar")
+        )
+        
+        if view_option == "Tabela":
+            st.write("Os seguintes feriados foram considerados 'não aproveitáveis' devido ao frio ou mau tempo:")
+            # Tabela
+            st.dataframe(non_enjoyable_holidays[['localName', 'date', 'average_temp', 'description']].rename(columns={
+                'localName': 'Feriado',
+                'date': 'Data',
+                'average_temp': 'Temp. Média',
+                'description': 'Tempo Predom.'
+            }))
+        else:
+            monthly_summary = non_enjoyable_holidays.groupby('month').agg({
+                'localName': 'count',
+                'average_temp': 'mean'
+            }).reset_index()
+            monthly_summary.columns = ['Mês', 'Total Feriados', 'Temp. Média']
+            monthly_summary['Tipo de Clima'] = monthly_summary['Temp. Média'].apply(
+                lambda temp: 'Frio' if temp < 20 else 'Mau Tempo'
+            )
+            
+            # Radar
+            fig = px.line_polar(monthly_summary, r='Total Feriados', theta='Mês', 
+                                line_close=True, 
+                                color='Tipo de Clima',
+                                hover_name='Mês',
+                                hover_data={'Temp. Média': ':.2f'},
+                                title="Distribuição dos Feriados 'Não Aproveitáveis' ao Longo do Ano",
+                                template="plotly_dark")
+            fig.update_traces(fill='toself')
+            st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("Nenhum feriado foi considerado 'não aproveitável' em 2024.")
 

@@ -26,6 +26,7 @@ grpcio==1.65.5
 grpcio-status==1.65.5
 idna==3.7
 Jinja2==3.1.4
+joblib==1.4.2
 jsonschema==4.23.0
 jsonschema-specifications==2023.12.1
 kiwisolver==1.4.5
@@ -57,11 +58,14 @@ requests==2.32.3
 rich==13.7.1
 rpds-py==0.20.0
 rsa==4.9
+scikit-learn==1.5.1
+scipy==1.14.1
 shapely==2.0.6
 six==1.16.0
 smmap==5.0.1
 streamlit==1.37.1
 tenacity==8.5.0
+threadpoolctl==3.5.0
 toml==0.10.2
 tornado==6.4.1
 tqdm==4.66.5

@@ -2,6 +2,7 @@ import streamlit as st
 from scripts.dialogflow_integration import detect_intent_from_text
 from scripts.render_sql import *
 from scripts.render_api import *
+from scripts.projeto_zeroloss.zl_scripts.render_ml import render_ml_modelo
 
 set_locale_to_pt_br()
 
@@ -16,7 +17,7 @@ st.caption('Por Frederico Zolio Gonzaga Diniz (fredzolio@live.com)')
 
 # Menu lateral
 st.sidebar.title("Menu")
-option = st.sidebar.selectbox("Escolha uma seção", ["SQL - Chamados 1746", "Integração com APIs", "Assistente Virtual"])
+option = st.sidebar.selectbox("Escolha uma seção", ["SQL - Chamados 1746", "Integração com APIs", "Assistente Virtual", "Previsões de Chuvas"])
 
 # Seção 1: SQL - Chamados 1746
 if option == "SQL - Chamados 1746":
@@ -83,3 +84,6 @@ elif option == "Assistente Virtual":
         response = detect_intent_from_text(user_input, session_id="123456")
         st.write(f"<span style='color: lightgreen; font-weight: bold;'>Fred (Assistente Data Rio):</span> {response}", unsafe_allow_html=True)
 ########################
+# Seção 4: Previsões de Chuvas
+elif option == "Previsões de Chuvas":
+    render_ml_modelo()
